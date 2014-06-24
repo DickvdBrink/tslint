@@ -69,7 +69,9 @@ module Lint.Configuration {
         }
 
         if (patterns) {
-            patterns = patterns.map(function(line) {
+            patterns = patterns.filter(function(line) {
+                return line.trim() !== "";
+            }).map(function(line) {
                 return <string>path.resolve(line.trim());
             });
 
