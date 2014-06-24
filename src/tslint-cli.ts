@@ -38,6 +38,10 @@ var optimist = require("optimist")
             alias: "help",
             describe: "display detailed help"
         },
+        "i": {
+            alias: "ignore",
+            describe: "path to ignore file"
+        },
         "o": {
             alias: "out",
             describe: "output file"
@@ -147,6 +151,8 @@ if (!fs.existsSync(argv.f)) {
     process.exit(1);
 }
 
+var patterns = Lint.Configuration.findIgnoreFile(argv.i);
+
 var file = argv.f;
 var contents = fs.readFileSync(file, "utf8");
 
@@ -154,7 +160,8 @@ var linter = new Lint.Linter(file, contents, {
     configuration: configuration,
     formatter: argv.t,
     rulesDirectory: argv.r,
-    formattersDirectory: argv.s
+    formattersDirectory: argv.s,
+    ignorePatterns: patterns
 });
 var lintResult = linter.lint();
 
