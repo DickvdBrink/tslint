@@ -52,18 +52,30 @@ module Lint.Configuration {
         return configFile ? JSON.parse(fs.readFileSync(configFile, "utf8")) : undefined;
     }
 
-    export function findIgnoreFile(ignoreFile: string) {
+    export function findIgnoreFile(ignoreFile: string): string[] {
+        var patterns: string[];
         if (ignoreFile) {
-            return fs.readFileSync(ignoreFile, "utf8").split("\n");
+            patterns = fs.readFileSync(ignoreFile, "utf8").split("\n");
         }
 
-        ignoreFile = findup("package.json", { nocase: true });
-        if (ignoreFile) {
-            ignoreFile = path.join(path.dirname(ignoreFile), IGNORE_FILENAME);
-            if (fs.existsSync(ignoreFile)) {
-                return fs.readFileSync(ignoreFile, "utf8").split("\n");
+        if (!patterns) {
+            ignoreFile = findup("package.json", { nocase: true });
+            if (ignoreFile) {
+                ignoreFile = path.join(path.dirname(ignoreFile), IGNORE_FILENAME);
+                if (fs.existsSync(ignoreFile)) {
+                    patterns = fs.readFileSync(ignoreFile, "utf8").split("\n");
+                }
             }
         }
+
+        if (patterns) {
+            patterns = patterns.map(function(line) {
+                return <string>path.resolve(line.trim());
+            });
+
+            return patterns;
+        }
+
         return undefined;
     }
 
