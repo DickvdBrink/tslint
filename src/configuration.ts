@@ -20,6 +20,7 @@ module Lint.Configuration {
     var findup = require("findup-sync");
 
     var CONFIG_FILENAME = "tslint.json";
+    var IGNORE_FILENAME = ".tslintignore";
 
     export function findConfiguration(configFile: string): any {
         if (configFile) {
@@ -49,6 +50,21 @@ module Lint.Configuration {
         configFile = findup(CONFIG_FILENAME, { nocase: true }) || defaultPath;
 
         return configFile ? JSON.parse(fs.readFileSync(configFile, "utf8")) : undefined;
+    }
+
+    export function findIgnoreFile(ignoreFile: string) {
+        if (ignoreFile) {
+            return fs.readFileSync(ignoreFile, "utf8").split("\n");
+        }
+
+        ignoreFile = findup("package.json", { nocase: true });
+        if (ignoreFile) {
+            ignoreFile = path.join(path.dirname(ignoreFile), IGNORE_FILENAME);
+            if (fs.existsSync(ignoreFile)) {
+                return fs.readFileSync(ignoreFile, "utf8").split("\n");
+            }
+        }
+        return undefined;
     }
 
     function getHomeDir() {
