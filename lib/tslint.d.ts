@@ -6552,6 +6552,7 @@ declare module Lint {
 }
 declare module Lint.Configuration {
     function findConfiguration(configFile: string): any;
+    function findIgnoreFile(ignoreFile: string): string[];
 }
 declare module Lint {
     interface Formatter {

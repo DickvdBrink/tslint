@@ -29,7 +29,6 @@
 
 module Lint {
     var path = require("path");
-    var minimatch = require("minimatch");
     var moduleDirectory = path.dirname(module.filename);
 
     export interface LintResult {

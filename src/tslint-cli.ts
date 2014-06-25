@@ -16,7 +16,10 @@
 
 /// <reference path='tslint.ts'/>
 
-var fs = require("fs");
+var fs = require("fs"),
+    path = require("path"),
+    minimatch = require("minimatch");
+
 var optimist = require("optimist")
     .usage("usage: $0")
     .check((argv: any) => {
@@ -151,9 +154,18 @@ if (!fs.existsSync(argv.f)) {
     process.exit(1);
 }
 
-var patterns = Lint.Configuration.findIgnoreFile(argv.i);
+var patterns = Lint.Configuration.findIgnoreFile(argv.i) || [];
 
 var file = argv.f;
+var fullPath = path.resolve(file);
+var skip = patterns.some((pattern: string) => {
+    return minimatch(fullPath, pattern);
+});
+
+if (skip) {
+    process.exit(0);
+}
+
 var contents = fs.readFileSync(file, "utf8");
 
 var linter = new Lint.Linter(file, contents, {
