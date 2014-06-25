@@ -172,8 +172,7 @@ var linter = new Lint.Linter(file, contents, {
     configuration: configuration,
     formatter: argv.t,
     rulesDirectory: argv.r,
-    formattersDirectory: argv.s,
-    ignorePatterns: patterns
+    formattersDirectory: argv.s
 });
 var lintResult = linter.lint();
 
